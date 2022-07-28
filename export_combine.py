@@ -6,3 +6,9 @@ bl_info = {
     "blender": (3, 2, 1),
     "category": "Object",
 }
+
+def register():
+    print("Enabled the addon")
+
+def unregister():
+    print("Disabling the addon")
