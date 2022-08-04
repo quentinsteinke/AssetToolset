@@ -16,7 +16,7 @@ def register():
 os.system('cls')
 
 selected_objects = bpy.context.selected_objects
-scene_collection = bpy.context.scene.collection.children
+all_collections = bpy.data.collections
 
 def add_split_normals():
     global selected_objects
@@ -37,7 +37,8 @@ def clear_split_normals():
         bpy.ops.mesh.customdata_custom_splitnormals_clear()
 
 def duplicate_objects():
-    to_unlink = []
+    duplicate_objects = []
+    global all_collections
     global selected_objects
     selected = bpy.data.objects
 
@@ -47,18 +48,31 @@ def duplicate_objects():
 
     #duplicating selected objects
     bpy.ops.object.duplicate()
+    duplicated_objects = bpy.context.selected_objects
+    for i in duplicated_objects:
+        print("-------" + i.name)
 
-    #move all duplicated objects to created collection
-    for obj in selected_objects:
+    #adding duplicated objects to duplicate_objects list
+    for obj in duplicated_objects:
+        duplicate_objects.append(obj)
+
+    #remove duplicated objects from all collections
+    for col in all_collections:
+        print(col.name)
+        for obj in duplicate_objects:
+            try:
+                print(obj.name + " unlinking object from " + col.name)
+                col.objects.unlink(obj)
+            except RuntimeError:
+                pass
+    
+    #add selected objects to duplicated collection
+    for obj in duplicated_objects:
         try:
             duplicate_collection.objects.link(obj)
-            print("objects linked to new collection")
+            print(obj.name + " linked to " + duplicate_collection.name)
         except RuntimeError:
             pass
-        to_unlink.append(obj)
-    
-    for obj in to_unlink:
-        print("code here")
 
 duplicate_objects()
 
