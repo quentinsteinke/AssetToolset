@@ -49,8 +49,6 @@ def duplicate_objects():
     #duplicating selected objects
     bpy.ops.object.duplicate()
     duplicated_objects = bpy.context.selected_objects
-    for i in duplicated_objects:
-        print("-------" + i.name)
 
     #adding duplicated objects to duplicate_objects list
     for obj in duplicated_objects:
@@ -58,10 +56,10 @@ def duplicate_objects():
 
     #remove duplicated objects from all collections
     for col in all_collections:
-        print(col.name)
+        #print(col.name)
         for obj in duplicate_objects:
             try:
-                print(obj.name + " unlinking object from " + col.name)
+                #print(obj.name + " unlinking object from " + col.name)
                 col.objects.unlink(obj)
             except RuntimeError:
                 pass
@@ -70,13 +68,27 @@ def duplicate_objects():
     for obj in duplicated_objects:
         try:
             duplicate_collection.objects.link(obj)
-            print(obj.name + " linked to " + duplicate_collection.name)
+            #print(obj.name + " linked to " + duplicate_collection.name)
         except RuntimeError:
             pass
 
-duplicate_objects()
 
-#add_split_normals()
+def prep_objects_for_combine():
+    selected_objects = bpy.context.selected_objects
+
+    bpy.ops.object.make_single_user(object=True, obdata=True)
+
+    for obj in selected_objects:
+        if obj.type == "MESH":
+            print("converting " + obj.name)
+            bpy.ops.object.convert(target='MESH')
+        else:
+            print(obj.name + "Not a mesh")
+
+    add_split_normals()
+
+duplicate_objects()
+prep_objects_for_combine()
 
 def unregister():
     print("Disabling the addon")
