@@ -13,6 +13,18 @@ bl_info = {
 import bpy
 import os
 
+#Operator to prep models
+class PrepForExport(bpy.types.Operator):
+    """Duplicates, preps and combines meshes for export"""
+    bl_label = "Prep for export"
+    bl_idname = "prepforexport"
+
+    def execute(self, context: 'Context'):
+        print("Prepping assets")
+
+        return {"Finished"}
+
+#N panel for the addon
 class PANEL_PT_SimpleExport(bpy.types.Panel):
     """Simple export panel"""
     bl_label = "SimpleExport"
@@ -23,14 +35,20 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        row = self.layout.row
+        row = self.layout.row()
         scene = context.scene
         obj = context.object
 
         layout.label(text="Simple Row: ")
+        #Working on adding in a button
+        row.operator("prepforexport")
+        layout.label(text="Another Row: ")
+        layout.label(text="And Another Row: ")
+
 
 Register_Unregister_Classes = (
     PANEL_PT_SimpleExport,
+    PrepForExport,
 
 )
 
@@ -44,6 +62,7 @@ def register():
 #clearing Blenders console
 #os.system('cls')
 
+#Adding split normals on selected objects
 def add_split_normals():
     current_selected_objects = bpy.context.selected_objects
     object = bpy.context.scene.objects
@@ -55,6 +74,7 @@ def add_split_normals():
         else:
             print(obj.name + " Not type mesh")
 
+#Clear split normals on selected objects
 def clear_split_normals():
     current_selected_objects = bpy.context.selected_objects
 
@@ -62,6 +82,7 @@ def clear_split_normals():
         bpy.context.view_layer.objects.active = bpy.context.scene.objects[obj.name]
         bpy.ops.mesh.customdata_custom_splitnormals_clear()
 
+#Duplicating selected objects
 def duplicate_objects():
     duplicate_objects = []
     all_collections = bpy.data.collections
@@ -115,6 +136,7 @@ def prep_objects_for_combine():
 
     add_split_normals()
 
+#Grouping ojects by parent empty and combining with parent name
 def combine_objects_by_parent():
     active_object = bpy.context.view_layer.objects.active
 
