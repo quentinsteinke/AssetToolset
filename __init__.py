@@ -79,6 +79,9 @@ def prep_objects_for_combine():
     bpy.ops.object.make_single_user(object=True, obdata=True)
 
     for obj in selected_objects:
+
+        bpy.data.objects[obj.name].select_set(True)
+        bpy.context.view_layer.objects.active = bpy.data.objects[obj.name]
         if obj.type == "MESH":
             print("converting " + obj.name)
             bpy.ops.object.convert(target='MESH')
