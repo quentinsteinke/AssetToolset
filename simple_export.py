@@ -159,14 +159,34 @@ class SimpleExport(bpy.types.Operator):
     bl_idname = "simpleexport.export"
     bl_options = {"REGISTER", "UNDO"}
 
-    selected_objects = bpy.context.selected_objects
+    # selected_objects = bpy.context.selected_objects
 
     def execute(self, context):
         simple_export_path = bpy.path.abspath(context.scene.simple_export_path)
         print(simple_export_path)
         export_path = pathlib.Path(simple_export_path)
-        for 
+        # for 
         # bpy.ops.export_mesh(filepath="")
+
+        return {"FINISHED"}
+
+
+class SimplifyPipes(bpy.types.Operator):
+    """Simplify Pipes"""
+    bl_label = "Simplify Pipes"
+    bl_idname = "simpleexport.simplepipes"
+    bl_options = {"REGISTER", "UNDO"}
+
+    # selected_objects = bpy.context.selected_objects
+
+    def execute(self, context):
+        print("SimplifyPipe")
+
+        # Reduce edge count by halfa
+        bpy.ops.mesh.loop_multi_select(ring=True)
+        bpy.ops.mesh.select_nth()
+        bpy.ops.mesh.loop_multi_select(ring=False)
+        bpy.ops.mesh.dissolve_mode(use_verts=True)
 
         return {"FINISHED"}
 
@@ -201,13 +221,17 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         row = layout.row()
         row.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
 
+        col = layout.column(align=True)
+        col.label(text="Model Reduction: ")
+        col.operator(SimplifyPipes.bl_idname, text= SimplifyPipes.bl_label)
+
 
 Register_Unregister_Classes = [
     PANEL_PT_SimpleExport,
     PrepForExport,
     CleanUp,
     SimpleExport,
-
+    SimplifyPipes,
 ]
 
 
