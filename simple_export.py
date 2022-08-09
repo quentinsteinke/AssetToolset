@@ -17,12 +17,12 @@ import os
 class PrepForExport(bpy.types.Operator):
     """Duplicates, preps and combines meshes for export"""
     bl_label = "Prep for export"
-    bl_idname = "prepforexport"
+    bl_idname = "scene.prepforexport"
 
-    def execute(self, context: 'Context'):
+    def execute(self, context):
         print("Prepping assets")
 
-        return {"Finished"}
+        return {"FINISHED"}
 
 #N panel for the addon
 class PANEL_PT_SimpleExport(bpy.types.Panel):
