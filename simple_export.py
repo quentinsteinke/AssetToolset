@@ -34,8 +34,11 @@ def clear_split_normals():
     current_selected_objects = bpy.context.selected_objects
 
     for obj in current_selected_objects:
-        bpy.context.view_layer.objects.active = bpy.context.scene.objects[obj.name]
-        bpy.ops.mesh.customdata_custom_splitnormals_clear()
+        if obj.type == "MESH":
+            bpy.context.view_layer.objects.active = bpy.context.scene.objects[obj.name]
+            bpy.ops.mesh.customdata_custom_splitnormals_clear()
+        else:
+            print(obj.name + " Not type mesh")
 
 #Duplicating selected objects
 def duplicate_objects():
@@ -140,19 +143,18 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         scene = context.scene
         obj = context.object
 
-        layout.label(text="Simple Row: ")
-        row.layout()
         #Working on adding in a button
+        layout.label(text="Simple Row: ")
         row.operator(PrepForExport.bl_idname, text= PrepForExport.bl_label, icon= "FILEBROWSER")
-        row.layout()
-        row.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
         layout.label(text="Another Row: ")
+        row.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
         layout.label(text="And Another Row: ")
 
 
 Register_Unregister_Classes = [
     PANEL_PT_SimpleExport,
     PrepForExport,
+    CleanUp,
 
 ]
 
