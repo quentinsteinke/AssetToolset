@@ -139,14 +139,17 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        row = self.layout.row()
+        row = layout.row()
         scene = context.scene
         obj = context.object
 
         #Working on adding in a button
         layout.label(text="Simple Row: ")
+        row = layout.row()
         row.operator(PrepForExport.bl_idname, text= PrepForExport.bl_label, icon= "FILEBROWSER")
+        row = layout.row()
         layout.label(text="Another Row: ")
+        row = layout.row()
         row.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
         layout.label(text="And Another Row: ")
 
