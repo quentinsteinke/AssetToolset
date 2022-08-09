@@ -13,6 +13,7 @@ bl_info = {
 from msilib.schema import Icon
 import bpy
 import os
+from bpy.props import BoolProperty, FloatProperty
 
 #clearing Blenders console
 #os.system('cls')
@@ -108,9 +109,24 @@ class PrepForExport(bpy.types.Operator):
     bl_idname = "object.prepforexport"
     bl_options = {"REGISTER", "UNDO"}
 
+    split_normals = BoolProperty(name="fix normals", default=True)
+    duplicate = BoolProperty(name="duplicate", default=True)
+
+    def draw(self, context):
+        layout = self.layout
+        column = layout.column()
+        
+        row = layout.row()
+        row.prop(self, "split_normals")
+
     def execute(self, context):
         print("Prepping assets")
-        add_split_normals()
+
+        if self.split_normals == True:
+            self.add_split_normals()
+        
+        if self.duplicate == True:
+            self.duplicate_objects()
 
         return {"FINISHED"}
 
