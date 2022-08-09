@@ -3,61 +3,16 @@ bl_info = {
     "author": "Quentin Steinke",
     "version": (1, 0),
     "blender": (3, 2, 0),
-    "location": "View3D > Add > Mesh > New Object",
+    "location": "View3D",
     "description": "Export game ready assets the simple way",
     "warning": "",
     "doc_url": "",
     "category": "Object",
 }
 
+from msilib.schema import Icon
 import bpy
 import os
-
-#Operator to prep models
-class PrepForExport(bpy.types.Operator):
-    """Duplicates, preps and combines meshes for export"""
-    bl_label = "Prep for export"
-    bl_idname = "scene.prepforexport"
-
-    def execute(self, context):
-        print("Prepping assets")
-
-        return {"FINISHED"}
-
-#N panel for the addon
-class PANEL_PT_SimpleExport(bpy.types.Panel):
-    """Simple export panel"""
-    bl_label = "SimpleExport"
-    bl_idname = "OBJECT_PT_export"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "SimpleExport"
-
-    def draw(self, context):
-        layout = self.layout
-        row = self.layout.row()
-        scene = context.scene
-        obj = context.object
-
-        layout.label(text="Simple Row: ")
-        #Working on adding in a button
-        row.operator("prepforexport")
-        layout.label(text="Another Row: ")
-        layout.label(text="And Another Row: ")
-
-
-Register_Unregister_Classes = (
-    PANEL_PT_SimpleExport,
-    PrepForExport,
-
-)
-
-
-def register():
-    print("Enabled the addon")
-
-    for cls in Register_Unregister_Classes:
-        bpy.utils.register_class(cls)
 
 #clearing Blenders console
 #os.system('cls')
@@ -142,6 +97,71 @@ def combine_objects_by_parent():
 
 #duplicate_objects()
 #prep_objects_for_combine()
+
+#Operator button to prep models
+class PrepForExport(bpy.types.Operator):
+    """Duplicates, preps and combines meshes for export"""
+    bl_label = "Prep for export"
+    bl_idname = "object.prepforexport"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        print("Prepping assets")
+        add_split_normals()
+
+        return {"FINISHED"}
+
+#Operator button to clean up
+class CleanUp(bpy.types.Operator):
+    """Clean up simple export"""
+    bl_label = "Clean up"
+    bl_idname = "object.cleanup"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        print("Prepping assets")
+        clear_split_normals()
+
+        return {"FINISHED"}
+
+
+#N panel for the addon
+class PANEL_PT_SimpleExport(bpy.types.Panel):
+    """Simple export panel"""
+    bl_label = "SimpleExport"
+    bl_idname = "OBJECT_PT_export"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "SimpleExport"
+
+    def draw(self, context):
+        layout = self.layout
+        row = self.layout.row()
+        scene = context.scene
+        obj = context.object
+
+        layout.label(text="Simple Row: ")
+        row.layout()
+        #Working on adding in a button
+        row.operator(PrepForExport.bl_idname, text= PrepForExport.bl_label, icon= "FILEBROWSER")
+        row.layout()
+        row.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
+        layout.label(text="Another Row: ")
+        layout.label(text="And Another Row: ")
+
+
+Register_Unregister_Classes = [
+    PANEL_PT_SimpleExport,
+    PrepForExport,
+
+]
+
+
+def register():
+    print("Enabled the addon")
+
+    for cls in Register_Unregister_Classes:
+        bpy.utils.register_class(cls)
 
 def unregister():
     print("Disabling the addon")
