@@ -1,7 +1,5 @@
-from msilib.schema import Icon
 import bpy
 import pathlib
-import os
 from bpy.props import BoolProperty
 
 bl_info = {
@@ -85,6 +83,8 @@ def duplicate_objects():
 
 def prep_objects_for_combine():
     current_selected_objects = bpy.context.selected_objects
+    first_active_obj = bpy.context.active_object
+    print(first_active_obj.name)
 
     bpy.ops.object.make_single_user(object=True, obdata=True)
 
@@ -97,6 +97,8 @@ def prep_objects_for_combine():
             bpy.ops.object.convert(target='MESH')
         else:
             print(obj.name + "Not a mesh")
+    bpy.data.objects[first_active_obj.name].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[first_active_obj.name]
 
     add_split_normals()
 
@@ -121,19 +123,20 @@ class PrepForExport(bpy.types.Operator):
 
     def draw(self, context):
         layout = self.layout
-        # column = layout.column()
-        
+        col = layout.column()
         row = layout.row()
         row.prop(self, "split_normals")
 
     def execute(self, context):
         print("Prepping assets")
 
-        if self.split_normals == True:
-            self.add_split_normals()
+        prep_objects_for_combine()
+
+        # if self.split_normals == True:
+            # self.add_split_normals()
         
-        if self.duplicate == True:
-            self.duplicate_objects()
+        # if self.duplicate == True:
+            # self.duplicate_objects()
 
         return {"FINISHED"}
 
@@ -142,12 +145,12 @@ class PrepForExport(bpy.types.Operator):
 # Operator button to clean up
 class CleanUp(bpy.types.Operator):
     """Clean up simple export"""
-    bl_label = "Clean up"
+    bl_label = "Clear Custom Normals"
     bl_idname = "simpleexport.cleanup"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        print("Prepping assets")
+        print("Simple clean up")
         clear_split_normals()
 
         return {"FINISHED"}
@@ -191,6 +194,47 @@ class SimplifyPipes(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class RenameToSelected(bpy.types.Operator):
+    """Rename active object to selected adding proper Prefix"""
+    bl_label = "Rename To Selected"
+    bl_idname = "simpleexport.renametoselected"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        print("RENAME TO SELECTED:")
+
+        # get selected objects
+
+        current_selected_objects = bpy.context.selected_objects
+        current_active_object = bpy.context.view_layer.objects.active
+
+        rename_objects = []
+
+        for obj in current_selected_objects:
+            rename_objects.append(obj)
+
+        num = len(rename_objects)
+        print(num)
+
+        # check to to see if there are only 2 objects selected
+        if len(rename_objects) == 2:
+            print("RENAMING OBJECT:")
+            print("index 0 object is: " + rename_objects[0].name)
+            print("index 1 object is: " + rename_objects[1].name)
+            obj0 = rename_objects[0]
+            obj1 = rename_objects[1]
+
+        elif len(rename_objects) > 2:
+            self.report({"ERROR"}, "Too many objects selected. Select 2 objects to Rename To Selected")
+        else:
+            self.report({"ERROR"}, "You need to select 2 objects to Rename to Selected")
+        # get not the selected objects name and store it in a "name" variable
+        # add SM_ prefix to "name"
+        # rename active object with "name"
+
+        return {"FINISHED"}
+
+
 # N panel for the addon
 class PANEL_PT_SimpleExport(bpy.types.Panel):
     """Simple export panel"""
@@ -210,20 +254,19 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         # Working on adding in a button
         col.label(text="Export: ")
         row = layout.row()
-        col.operator(PrepForExport.bl_idname, text= PrepForExport.bl_label, icon= "FILEBROWSER")
+        col.operator(PrepForExport.bl_idname, text= PrepForExport.bl_label, icon= "MOD_LINEART")
         row = layout.row()
         col.prop(context.scene, "simple_export_path")
-        col.operator("simpleexport.export")
+        col.operator("simpleexport.export", icon= "DISC")
 
         col = layout.column(align=True)
-        col.label(text="Clean up: ")
-        row = layout.row()
-        row = layout.row()
-        row.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
+        col.label(text="Simple Clean up: ")
+        col.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
 
         col = layout.column(align=True)
-        col.label(text="Model Reduction: ")
-        col.operator(SimplifyPipes.bl_idname, text= SimplifyPipes.bl_label)
+        col.label(text="Other Tools: ")
+        col.operator(SimplifyPipes.bl_idname, text= SimplifyPipes.bl_label, icon= "MOD_REMESH")
+        col.operator(RenameToSelected.bl_idname, text= RenameToSelected.bl_label, icon= "FONT_DATA")
 
 
 Register_Unregister_Classes = [
@@ -232,6 +275,7 @@ Register_Unregister_Classes = [
     CleanUp,
     SimpleExport,
     SimplifyPipes,
+    RenameToSelected,
 ]
 
 
