@@ -141,7 +141,6 @@ class PrepForExport(bpy.types.Operator):
         return {"FINISHED"}
 
 
-
 # Operator button to clean up
 class CleanUp(bpy.types.Operator):
     """Clean up simple export"""
@@ -254,19 +253,19 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         # Working on adding in a button
         col.label(text="Export: ")
         row = layout.row()
-        col.operator(PrepForExport.bl_idname, text= PrepForExport.bl_label, icon= "MOD_LINEART")
+        col.operator(PrepForExport.bl_idname, text=PrepForExport.bl_label, icon="MOD_LINEART")
         row = layout.row()
         col.prop(context.scene, "simple_export_path")
-        col.operator("simpleexport.export", icon= "DISC")
+        col.operator("simpleexport.export", icon="DISC")
 
         col = layout.column(align=True)
         col.label(text="Simple Clean up: ")
-        col.operator(CleanUp.bl_idname, text= CleanUp.bl_label, icon= "SHADERFX")
+        col.operator(CleanUp.bl_idname, text=CleanUp.bl_label, icon="SHADERFX")
 
         col = layout.column(align=True)
         col.label(text="Other Tools: ")
-        col.operator(SimplifyPipes.bl_idname, text= SimplifyPipes.bl_label, icon= "MOD_REMESH")
-        col.operator(RenameToSelected.bl_idname, text= RenameToSelected.bl_label, icon= "FONT_DATA")
+        col.operator(SimplifyPipes.bl_idname, text=SimplifyPipes.bl_label, icon="MOD_REMESH")
+        col.operator(RenameToSelected.bl_idname, text=RenameToSelected.bl_label, icon="FONT_DATA")
 
 
 Register_Unregister_Classes = [
@@ -288,6 +287,7 @@ def register():
     for cls in Register_Unregister_Classes:
         bpy.utils.register_class(cls)
 
+
 def unregister():
     print("Disabling the addon")
     del bpy.types.Scene.simple_export_path
@@ -296,3 +296,4 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+    
