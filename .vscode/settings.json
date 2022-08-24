@@ -1,4 +1,12 @@
 {
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "editor.rulers": [
+        {
+            "column": 80,
+            "color": "#FD3B35"
+        }
+    ],
+    "editor.fontSize": 16,
+
 }
