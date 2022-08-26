@@ -97,7 +97,7 @@ def prep_objects_for_combine():
             bpy.ops.object.convert(target='MESH')
         else:
             print(obj.name + "Not a mesh")
-    bpy.data.objects[first_active_obj.name].select_set(True)
+    bpy.context.view_layer.objects.active = first_active_obj
     bpy.context.view_layer.objects.active = bpy.data.objects[first_active_obj.name]
 
     add_split_normals()
@@ -109,6 +109,50 @@ def combine_objects_by_parent():
 
 # duplicate_objects()
 # prep_objects_for_combine()
+
+
+def mark_as_finished():
+    """Mark asset as finished and move to "Finished" Collection"""
+    active_objects = bpy.context.view_layer.objects.selected
+    print(active_objects)
+
+    all_collections = bpy.data.collections
+    selected = bpy.data.objects
+
+    # adding a new collection to put all duplicate objects
+    Finished_collection = bpy.data.collections.new(name="Finished")
+    bpy.context.scene.collection.children.link(Finished_collection)
+
+    # remove duplicated objects from all collections
+    for col in all_collections:
+        # print(col.name)
+        for obj in active_objects:
+            try:
+                # print(obj.name + " unlinking object from " + col.name)
+                col.objects.unlink(obj)
+            except RuntimeError:
+                pass
+
+    # add selected objects to duplicated collection
+    for obj in active_objects:
+        try:
+            Finished_collection.objects.link(obj)
+            # print(obj.name + " linked to " + duplicate_collection.name)
+        except RuntimeError:
+            pass
+
+
+class MarkAsFinished(bpy.types.Operator):
+    """Mark asset as finished and move to "Finished" Collection"""
+    bl_label = "Mark as finished"
+    bl_idname = "simpleexport.mark_as_finished"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        print("Marking as finished")
+        mark_as_finished()
+
+        return {"FINISHED"}
 
 
 # Operator button to prep models
@@ -266,6 +310,7 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         col.label(text="Other Tools: ")
         col.operator(SimplifyPipes.bl_idname, text=SimplifyPipes.bl_label, icon="MOD_REMESH")
         col.operator(RenameToSelected.bl_idname, text=RenameToSelected.bl_label, icon="FONT_DATA")
+        col.operator(MarkAsFinished.bl_idname, text=MarkAsFinished.bl_label)
 
 
 Register_Unregister_Classes = [
@@ -275,6 +320,7 @@ Register_Unregister_Classes = [
     SimpleExport,
     SimplifyPipes,
     RenameToSelected,
+    MarkAsFinished,
 ]
 
 
@@ -294,6 +340,6 @@ def unregister():
     for cls in Register_Unregister_Classes:
         bpy.utils.unregister_class(cls)
 
+
 if __name__ == "__main__":
     register()
-    
