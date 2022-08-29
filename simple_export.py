@@ -14,9 +14,6 @@ bl_info = {
     "category": "Object",
 }
 
-# clearing Blenders console
-# os.system('cls')
-
 
 # Adding split normals on selected objects
 def add_split_normals():
@@ -111,6 +108,7 @@ def combine_objects_by_parent():
 # prep_objects_for_combine()
 
 
+# Needs work
 def mark_as_finished():
     """Mark asset as finished and move to "Finished" Collection"""
     active_objects = bpy.context.view_layer.objects.selected
@@ -151,6 +149,46 @@ class MarkAsFinished(bpy.types.Operator):
     def execute(self, context):
         print("Marking as finished")
         mark_as_finished()
+
+        return {"FINISHED"}
+
+
+def clear_custom_normals_selection():
+    print("clearing custom normals")
+    bpy.ops.mesh.separate(type='SELECTED')
+    bpy.ops.object.editmode_toggle()
+
+    selection = bpy.context.view_layer.objects.selected
+    selection_1 = bpy.data.objects
+    modifymesh = selection[1]
+    originalobj = selection[0]
+
+    bpy.context.view_layer.objects.active = modifymesh
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[modifymesh.name].select_set(True)
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
+    bpy.ops.mesh.mark_sharp(clear=True)
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.customdata_custom_splitnormals_clear()
+
+    print(selection_1)
+    for obj in selection:
+        obj.select_set(True)
+
+    bpy.context.view_layer.objects.active = originalobj
+    bpy.ops.object.join()
+
+
+class ClearCustomNormals_Selection(bpy.types.Operator):
+    """Clear custom normals by selection"""
+    bl_label = "Clear custom normals selection"
+    bl_idname = "simpleexport.clear_customnormals_selection"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        clear_custom_normals_selection()
 
         return {"FINISHED"}
 
@@ -278,6 +316,24 @@ class RenameToSelected(bpy.types.Operator):
         return {"FINISHED"}
 
 
+def testing_code():
+    print("Testing Code")
+    selection_1 = bpy.data.objects
+    print(selection_1)
+
+
+class TestingCode(bpy.types.Operator):
+    """Testing code"""
+    bl_label = "Testing code"
+    bl_idname = "simpleexport.testingcode"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        testing_code()
+    
+        return {"FINISHED"}
+
+
 # N panel for the addon
 class PANEL_PT_SimpleExport(bpy.types.Panel):
     """Simple export panel"""
@@ -305,12 +361,15 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         col = layout.column(align=True)
         col.label(text="Simple Clean up: ")
         col.operator(CleanUp.bl_idname, text=CleanUp.bl_label, icon="SHADERFX")
+        col.operator(ClearCustomNormals_Selection.bl_idname, text=ClearCustomNormals_Selection.bl_label, icon="MOD_TRIANGULATE")
 
         col = layout.column(align=True)
         col.label(text="Other Tools: ")
         col.operator(SimplifyPipes.bl_idname, text=SimplifyPipes.bl_label, icon="MOD_REMESH")
         col.operator(RenameToSelected.bl_idname, text=RenameToSelected.bl_label, icon="FONT_DATA")
-        col.operator(MarkAsFinished.bl_idname, text=MarkAsFinished.bl_label)
+        col.operator(MarkAsFinished.bl_idname, text=MarkAsFinished.bl_label, icon="CHECKMARK")
+        row = layout.row()
+        row.operator(TestingCode.bl_idname, text=TestingCode.bl_label, icon="FILE_SCRIPT")
 
 
 Register_Unregister_Classes = [
@@ -321,6 +380,8 @@ Register_Unregister_Classes = [
     SimplifyPipes,
     RenameToSelected,
     MarkAsFinished,
+    ClearCustomNormals_Selection,
+    TestingCode,
 ]
 
 
