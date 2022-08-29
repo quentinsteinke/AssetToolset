@@ -337,7 +337,10 @@ def testing_code():
     print("Testing Code")
     newMesh = bpy.data.meshes.new("newMesh")
     newObject = bpy.data.objects.new(name="newObject", object_data=newMesh)
-    scene = bpy.data.scenes["Scene"]
+    current_scene = bpy.data.scenes["Scene"]
+    current_collection = bpy.context.collection.name
+
+    bpy.context.collections(current_collection).link(newObject)
     
 
     materials = bpy.data.materials
@@ -348,7 +351,7 @@ def testing_code():
     objects = bpy.data.objects
     print("------------")
     for obj in objects:
-        obj["myProperty"] = "look at me now"
+        obj["myProperty"] = [1.0, 1.0, 1.0]
         try:
             obj.data.vertices[0].co.x += 50
         except AttributeError:
