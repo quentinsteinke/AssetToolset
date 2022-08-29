@@ -1,6 +1,13 @@
 import bpy
 import pathlib
-from bpy.props import BoolProperty
+from bpy.props import (
+    BoolProperty,
+    IntProperty,
+    FloatProperty,
+    FloatVectorProperty,
+    EnumProperty,
+    PointerProperty,
+)
 
 bl_info = {
     "name": "Simple Export",
@@ -13,6 +20,9 @@ bl_info = {
     "doc_url": "",
     "category": "Object",
 }
+
+# clearing Blenders console
+# os.system('cls')
 
 
 # Adding split normals on selected objects
@@ -193,6 +203,10 @@ class ClearCustomNormals_Selection(bpy.types.Operator):
         return {"FINISHED"}
 
 
+bpy.types.Scene.split_normals = BoolProperty(name="fix normals", description="Split normals before combine", default=True)
+bpy.types.Scene.duplicate = BoolProperty(name="duplicate", description="Duplicate meshes before combine", default=True)
+
+
 # Operator button to prep models
 class PrepForExport(bpy.types.Operator):
     """Duplicates, preps and combines meshes for export"""
@@ -200,14 +214,17 @@ class PrepForExport(bpy.types.Operator):
     bl_idname = "simpleexport.prepforexport"
     bl_options = {"REGISTER", "UNDO"}
 
-    split_normals = BoolProperty(name="fix normals", default=True)
-    duplicate = BoolProperty(name="duplicate", default=True)
+    split_normals: BoolProperty(name="fix normals", description="Split normals before combine", default=True)
+    duplicate: BoolProperty(name="duplicate", description="Duplicate meshes before combine", default=True)
 
     def draw(self, context):
         layout = self.layout
+        duplicate = context.scene.duplicate
+        split_normals = context.scene.split_normals
         col = layout.column()
         row = layout.row()
-        row.prop(self, "split_normals")
+        row.prop(duplicate, "duplicate")
+        row.prop(split_normals, "split_normals")
 
     def execute(self, context):
         print("Prepping assets")
@@ -318,8 +335,37 @@ class RenameToSelected(bpy.types.Operator):
 
 def testing_code():
     print("Testing Code")
-    selection_1 = bpy.data.objects
-    print(selection_1)
+    newMesh = bpy.data.meshes.new("newMesh")
+    newObject = bpy.data.objects.new(name="newObject", object_data=newMesh)
+    scene = bpy.data.scenes["Scene"]
+    
+
+    materials = bpy.data.materials
+    print("------------")
+    for mat in materials:
+        print(mat.name)
+
+    objects = bpy.data.objects
+    print("------------")
+    for obj in objects:
+        obj["myProperty"] = "look at me now"
+        try:
+            obj.data.vertices[0].co.x += 50
+        except AttributeError:
+            pass
+        except IndexError:
+            pass
+        print(obj.name)
+
+    meshes = bpy.data.meshes
+    print("------------")
+    for mesh in meshes:
+        print(mesh.name)
+
+    scenes = bpy.data.scenes
+    print("------------")
+    for sce in scenes:
+        print(sce.name)
 
 
 class TestingCode(bpy.types.Operator):
@@ -346,6 +392,7 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
+        scene = context.scene
         col = layout.column(align=True)
         # scene = context.scene
         # obj = context.object
@@ -353,6 +400,9 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         # Working on adding in a button
         col.label(text="Export: ")
         row = layout.row()
+        row.prop(scene, "split_normals")
+        row.prop(scene, "duplicate")
+        col = layout.column(align=True)
         col.operator(PrepForExport.bl_idname, text=PrepForExport.bl_label, icon="MOD_LINEART")
         row = layout.row()
         col.prop(context.scene, "simple_export_path")
