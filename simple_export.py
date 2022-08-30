@@ -169,7 +169,7 @@ def clear_custom_normals_selection():
     bpy.ops.object.editmode_toggle()
 
     selection = bpy.context.view_layer.objects.selected
-    selection_1 = bpy.data.objects
+    selection_1 = bpy.context.view_layer.objects
     modifymesh = selection[1]
     originalobj = selection[0]
 
@@ -185,7 +185,8 @@ def clear_custom_normals_selection():
 
     print(selection_1)
     for obj in selection:
-        obj.select_set(True)
+        bpy.context.view_layer.objects[obj.name].select_set(True)
+        bpy.context.view_layer.objects.active = obj
 
     bpy.context.view_layer.objects.active = originalobj
     bpy.ops.object.join()
