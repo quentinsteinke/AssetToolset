@@ -10,7 +10,14 @@
             "color": "#FD3B35"
         }
     ],
+    
     "editor.fontSize": 16,
+
+    "workbench.tree.indent": 30
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.colorCustomizations": {
+      "tree.indentGuidesStroke": "#59a9f5"
+    },
     
     "terminal.integrated.profiles.windows": {
         "PowerShell": {
