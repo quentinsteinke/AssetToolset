@@ -8,6 +8,7 @@ modules = [
 ]
 imported_modules = {}
 
+
 for module_name in modules:
     if module_name in locals():
         print(f"Reloading {module_name}")
@@ -15,17 +16,16 @@ for module_name in modules:
         imported_modules[module_name] = locals()[module_name]
     else:
         exec("from . import {}".format(module_name))
-        exec("from .. import {}".format(module_name))
         imported_modules[module_name] = locals()[module_name]
 
 
 bl_info = {
-    "name": "Simple Export",
+    "name": "Asset Create",
     "author": "Quentin Steinke",
     "version": (1, 0),
     "blender": (3, 2, 0),
     "location": "View3D",
-    "description": "Export game ready assets the simple way",
+    "description": "A asset creation toolset for Blender",
     "warning": "",
     "doc_url": "",
     "category": "Object",
@@ -34,12 +34,12 @@ bl_info = {
 
 # N panel for the addon
 class PANEL_PT_SimpleExport(bpy.types.Panel):
-    """Simple export panel"""
-    bl_label = "SimpleExport"
+    """Asset Create"""
+    bl_label = "AssetCreate"
     bl_idname = "OBJECT_PT_export"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "SimpleExport"
+    bl_category = "AssetCreate"
 
     def draw(self, context):
         layout = self.layout
@@ -58,10 +58,10 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         col.operator(operations.PrepForExport.bl_idname, text=operations.PrepForExport.bl_label, icon="MOD_LINEART")
         row = layout.row()
         col.prop(context.scene, "simple_export_path")
-        col.operator("simpleexport.export", icon="DISC")
+        col.operator("assetcreate.export", icon="DISC")
 
         col = layout.column(align=True)
-        col.label(text="Simple Clean up: ")
+        col.label(text="Clean up: ")
         col.operator(operations.CleanUp.bl_idname, text=operations.CleanUp.bl_label, icon="SHADERFX")
         col.operator(operations.ClearCustomNormals_Selection.bl_idname, text=operations.ClearCustomNormals_Selection.bl_label, icon="MOD_TRIANGULATE")
 

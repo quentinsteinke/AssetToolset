@@ -3,20 +3,29 @@ import sys
 import os
 import importlib
 
-blend_dir = os.path.dirname(bpy.data.filepath)
-if blend_dir not in sys.path:
-    sys.path.append(blend_dir)
+modules = [
+    "operations"
+]
+imported_modules = {}
 
-import operations as op
-importlib.reload(op)
+
+for module_name in modules:
+    if module_name in locals():
+        print(f"Reloading {module_name}")
+        importlib.reload(locals()[module_name])
+        imported_modules[module_name] = locals()[module_name]
+    else:
+        exec("from . import {}".format(module_name))
+        imported_modules[module_name] = locals()[module_name]
+
 
 bl_info = {
-    "name": "Simple Export",
+    "name": "Asset Create",
     "author": "Quentin Steinke",
     "version": (1, 0),
     "blender": (3, 2, 0),
     "location": "View3D",
-    "description": "Export game ready assets the simple way",
+    "description": "A asset creation toolset for Blender",
     "warning": "",
     "doc_url": "",
     "category": "Object",
@@ -25,12 +34,12 @@ bl_info = {
 
 # N panel for the addon
 class PANEL_PT_SimpleExport(bpy.types.Panel):
-    """Simple export panel"""
-    bl_label = "SimpleExport"
+    """Asset Create"""
+    bl_label = "AssetCreate"
     bl_idname = "OBJECT_PT_export"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "SimpleExport"
+    bl_category = "AssetCreate"
 
     def draw(self, context):
         layout = self.layout
@@ -46,23 +55,23 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         row.prop(scene, "split_normals")
         row.prop(scene, "duplicate")
         col = layout.column(align=True)
-        col.operator(op.PrepForExport.bl_idname, text=op.PrepForExport.bl_label, icon="MOD_LINEART")
+        col.operator(operations.PrepForExport.bl_idname, text=operations.PrepForExport.bl_label, icon="MOD_LINEART")
         row = layout.row()
         col.prop(context.scene, "simple_export_path")
-        col.operator("simpleexport.export", icon="DISC")
+        col.operator("assetcreate.export", icon="DISC")
 
         col = layout.column(align=True)
-        col.label(text="Simple Clean up: ")
-        col.operator(op.CleanUp.bl_idname, text=op.CleanUp.bl_label, icon="SHADERFX")
-        col.operator(op.ClearCustomNormals_Selection.bl_idname, text=op.ClearCustomNormals_Selection.bl_label, icon="MOD_TRIANGULATE")
+        col.label(text="Clean up: ")
+        col.operator(operations.CleanUp.bl_idname, text=operations.CleanUp.bl_label, icon="SHADERFX")
+        col.operator(operations.ClearCustomNormals_Selection.bl_idname, text=operations.ClearCustomNormals_Selection.bl_label, icon="MOD_TRIANGULATE")
 
         col = layout.column(align=True)
         col.label(text="Other Tools: ")
-        col.operator(op.SimplifyPipes.bl_idname, text=op.SimplifyPipes.bl_label, icon="MOD_REMESH")
-        col.operator(op.RenameToSelected.bl_idname, text=op.RenameToSelected.bl_label, icon="FONT_DATA")
-        col.operator(op.MarkAsFinished.bl_idname, text=op.MarkAsFinished.bl_label, icon="CHECKMARK")
+        col.operator(operations.SimplifyPipes.bl_idname, text=operations.SimplifyPipes.bl_label, icon="MOD_REMESH")
+        col.operator(operations.RenameToSelected.bl_idname, text=operations.RenameToSelected.bl_label, icon="FONT_DATA")
+        col.operator(operations.MarkAsFinished.bl_idname, text=operations.MarkAsFinished.bl_label, icon="CHECKMARK")
         row = layout.row()
-        row.operator(op.TestingCode.bl_idname, text=op.TestingCode.bl_label, icon="FILE_SCRIPT")
+        row.operator(operations.TestingCode.bl_idname, text=operations.TestingCode.bl_label, icon="FILE_SCRIPT")
 
 
 Register_Unregister_Classes = [
@@ -71,7 +80,7 @@ Register_Unregister_Classes = [
 
 
 def register():
-    op.register()
+    operations.register()
     print("Enabled the addon")
     bpy.types.Scene.simple_export_path = bpy.props.StringProperty(
         name="Export Folder",
@@ -82,7 +91,7 @@ def register():
 
 
 def unregister():
-    op.unregister()
+    operations.unregister()
     print("Disabling the addon")
     del bpy.types.Scene.simple_export_path
     for cls in Register_Unregister_Classes:

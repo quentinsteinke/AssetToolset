@@ -7,7 +7,7 @@ from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorPrope
 class MarkAsFinished(bpy.types.Operator):
     """Mark asset as finished and move to "Finished" Collection"""
     bl_label = "Mark as finished"
-    bl_idname = "simpleexport.mark_as_finished"
+    bl_idname = "assetcreate.mark_as_finished"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -20,7 +20,7 @@ class MarkAsFinished(bpy.types.Operator):
 class ClearCustomNormals_Selection(bpy.types.Operator):
     """Clear custom normals by selection"""
     bl_label = "Clear custom normals selection"
-    bl_idname = "simpleexport.clear_customnormals_selection"
+    bl_idname = "assetcreate.clear_customnormals_selection"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -37,7 +37,7 @@ bpy.types.Scene.duplicate = BoolProperty(name="duplicate", description="Duplicat
 class PrepForExport(bpy.types.Operator):
     """Duplicates, preps and combines meshes for export"""
     bl_label = "Prep for export"
-    bl_idname = "simpleexport.prepforexport"
+    bl_idname = "assetcreate.prepforexport"
     bl_options = {"REGISTER", "UNDO"}
 
     split_normals: BoolProperty(name="fix normals", description="Split normals before combine", default=True)
@@ -70,7 +70,7 @@ class PrepForExport(bpy.types.Operator):
 class CleanUp(bpy.types.Operator):
     """Clean up simple export"""
     bl_label = "Clear Custom Normals"
-    bl_idname = "simpleexport.cleanup"
+    bl_idname = "assetcreate.cleanup"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -83,7 +83,7 @@ class CleanUp(bpy.types.Operator):
 class SimpleExport(bpy.types.Operator):
     """Export selected objects"""
     bl_label = "Export Selected"
-    bl_idname = "simpleexport.export"
+    bl_idname = "assetcreate.export"
     bl_options = {"REGISTER", "UNDO"}
 
     # selected_objects = bpy.context.selected_objects
@@ -101,7 +101,7 @@ class SimpleExport(bpy.types.Operator):
 class SimplifyPipes(bpy.types.Operator):
     """Simplify Pipes"""
     bl_label = "Simplify Pipes"
-    bl_idname = "simpleexport.simplepipes"
+    bl_idname = "assetcreate.simplepipes"
     bl_options = {"REGISTER", "UNDO"}
 
     # selected_objects = bpy.context.selected_objects
@@ -121,7 +121,7 @@ class SimplifyPipes(bpy.types.Operator):
 class RenameToSelected(bpy.types.Operator):
     """Rename active object to selected adding proper Prefix"""
     bl_label = "Rename To Selected"
-    bl_idname = "simpleexport.renametoselected"
+    bl_idname = "assetcreate.renametoselected"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
