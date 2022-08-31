@@ -1,4 +1,21 @@
 import bpy
+import importlib
+
+
+def reload_addon():
+    modules = [
+        "operations"
+    ]
+    imported_modules = {}
+
+    for module_name in modules:
+        if module_name in locals():
+            print(f"Reloading {module_name}")
+            importlib.reload(locals()[module_name])
+            imported_modules[module_name] = locals()[module_name]
+        else:
+            exec("from . import {}".format(module_name))
+            imported_modules[module_name] = locals()[module_name]
 
 
 def testing_code():
@@ -33,3 +50,7 @@ def testing_code():
     print("------------")
     for sce in scenes:
         print(sce.name)
+
+
+def test_code_2():
+    print("test complete 2")

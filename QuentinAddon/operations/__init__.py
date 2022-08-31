@@ -1,7 +1,8 @@
 import bpy
 from . import asset
 from .asset import MarkAsFinished, ClearCustomNormals_Selection, PrepForExport, CleanUp, SimpleExport, SimplifyPipes, RenameToSelected
-from .test import TestingCode
+from . import test
+from .test import TestingCode, TestCode2
 
 
 Register_Unregister_Classes = [
@@ -13,6 +14,7 @@ Register_Unregister_Classes = [
     MarkAsFinished,
     ClearCustomNormals_Selection,
     TestingCode,
+    TestCode2
 ]
 
 

@@ -1,4 +1,5 @@
 import bpy
+import importlib
 from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty
 
 
@@ -154,4 +155,3 @@ def clear_custom_normals_selection():
 
     bpy.context.view_layer.objects.active = originalobj
     bpy.ops.object.join()
-

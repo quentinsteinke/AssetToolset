@@ -33,3 +33,7 @@ def testing_code():
     print("------------")
     for sce in scenes:
         print(sce.name)
+
+
+def test_code_2():
+    print("test complete 2")
