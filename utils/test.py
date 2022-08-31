@@ -1,21 +1,5 @@
 import bpy
-import importlib
-
-
-def reload_addon():
-    modules = [
-        "operations"
-    ]
-    imported_modules = {}
-
-    for module_name in modules:
-        if module_name in locals():
-            print(f"Reloading {module_name}")
-            importlib.reload(locals()[module_name])
-            imported_modules[module_name] = locals()[module_name]
-        else:
-            exec("from . import {}".format(module_name))
-            imported_modules[module_name] = locals()[module_name]
+import bmesh
 
 
 def testing_code():
@@ -54,3 +38,9 @@ def testing_code():
 
 def test_code_2():
     print("test complete 2")
+
+
+def bmesh_testing():
+    myobj = bpy.context.view_layer.objects.active
+    mymesh = bpy.data.meshes.get(myobj.to_mesh())
+    bmesh.from_edit_mesh(myobj).edges.append(mymesh)

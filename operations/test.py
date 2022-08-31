@@ -1,17 +1,6 @@
 import bpy
-from .. utils.test import testing_code, test_code_2, reload_addon
-
-
-class ReloadAddon(bpy.types.Operator):
-    """Reload Addon"""
-    bl_label = "Reload Addon"
-    bl_idname = "assetcreate.reloadaddon"
-    bl_options = {"REGISTER", "UNDO"}
-
-    def execute(self, context):
-        reload_addon()
-
-        return {"FINISHED"}
+import bmesh
+from .. utils.test import testing_code, test_code_2, bmesh_testing
 
 
 class TestingCode(bpy.types.Operator):
@@ -34,5 +23,17 @@ class TestCode2(bpy.types.Operator):
 
     def execute(self, context):
         test_code_2()
+
+        return {"FINISHED"}
+
+
+class BmeshTest(bpy.types.Operator):
+    """Testing out Bmesh"""
+    bl_label = "Testing Bmesh"
+    bl_idname = "assetcreate.bmeshtesting"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        bmesh_testing()
 
         return {"FINISHED"}
