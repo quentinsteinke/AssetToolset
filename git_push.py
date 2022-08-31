@@ -1,3 +1,3 @@
 import os
 
-os.system('git add -u & git commit --amend & git push')
+os.system('git add -u & git commit -m "update" & git push')
