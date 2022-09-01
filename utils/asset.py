@@ -106,10 +106,15 @@ def mark_as_finished():
     selected = bpy.data.objects
 
     # adding a new collection to put all duplicate objects
-    Finished_collection = bpy.data.collections.new(name="Finished")
-    bpy.context.scene.collection.children.link(Finished_collection)
+    if "Finished" in all_collections:
+        print("Finished collection found")
+        pass
+    else:
+        print("Making Finished collection")
+        Finished_collection = bpy.data.collections.new(name="Finished")
+        bpy.context.scene.collection.children.link(Finished_collection)
 
-    # remove duplicated objects from all collections
+"""    # remove duplicated objects from all collections
     for col in all_collections:
         # print(col.name)
         for obj in active_objects:
@@ -125,7 +130,7 @@ def mark_as_finished():
             Finished_collection.objects.link(obj)
             # print(obj.name + " linked to " + duplicate_collection.name)
         except RuntimeError:
-            pass
+            pass"""
 
 
 def clear_custom_normals_selection():
