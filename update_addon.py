@@ -2,33 +2,42 @@ import os
 
 
 # Files to update
-search_files = [
-    "__init__.py",
-    "operations",
-    "utils"
-]
 user_path = os.path.expanduser("~")
-blender_path = "\\AppData\\Roaming\\Blender Foundation\\Blender\\3.2\\scripts\\addons\\QuentinAddon"
+destination_path = "\\AppData\\Roaming\\Blender Foundation\\Blender\\3.2\\scripts\\addons\\QuentinAddon"
+g_cwd = os.getcwd()
 
-current_dir = os.getcwd()
-blender_addon_path = f"{user_path}{blender_path}"
+print("------------New Directory------------")
+print(f">{g_cwd}")
 
 
-def copy_files(files):
-    new_files = []
+def copy_all_Files(cwd):
+    print("starting search")
+    search_files = []
+    remove_files = []
+    dir_list = []
 
-    for file in files:
+    search_files = (os.listdir(cwd))
+    print(search_files)
+
+    # Copy python files
+    for file in search_files:
         if file.endswith(".py"):
-            print(f"Copping {file}")
-            # os.system(f'copy "{current_dir}\\{file}" "{blender_addon_path}"')
-            pass
+            print(file)
+            remove_files.append(file)
+        elif os.path.isdir(f"{cwd}\\{file}") is True and file.startswith(".") == False:
+            dir_list.append(file)
         else:
-            print(f"Adding {file} to dir list")
-            current_dir = f'{current_dir}\\{file}'
-            blender_addon_path = f'{blender_addon_path}\\{file}'
-            new_dir = os.listdir(current_dir)
-            new_files.append(new_dir)
-            copy_files(new_files)
+            pass
+
+    for dir in dir_list:
+        new_cwd = f"{cwd}\\{dir}"
+        print("------------New Directory------------")
+        print(f">{dir}")
+        copy_all_Files(new_cwd)
+
+    # Remove copied files from search list
+    for file in remove_files:
+        search_files.remove(file)
 
 
-copy_files(search_files)
+copy_all_Files(g_cwd)

@@ -11,6 +11,9 @@ def copy_all_Files(cwd):
     search_files = []
     remove_files = []
 
+    search_files = (os.listdir(cwd))
+
+
     # Copy python files
     for file in search_files:
         print("------------")
