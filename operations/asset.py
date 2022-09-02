@@ -1,6 +1,6 @@
 import bpy
 import pathlib
-from .. utils import add_split_normals, clear_split_normals, duplicate_objects, prep_objects_for_combine, combine_objects_by_parent, mark_as_finished, clear_custom_normals_selection
+from .. utils import add_split_normals, clear_split_normals, duplicate_objects, prep_objects_for_combine, combine_objects_by_parent, mark_as_finished, clear_custom_normals_selection, group_for_export
 from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty
 
 
@@ -155,5 +155,19 @@ class RenameToSelected(bpy.types.Operator):
         # get not the selected objects name and store it in a "name" variable
         # add SM_ prefix to "name"
         # rename active object with "name"
+
+        return {"FINISHED"}
+
+
+class GroupForExport(bpy.types.Operator):
+    """Group For Export"""
+    bl_label = "Group for export"
+    bl_idname = "assetcreate.groupforexport"
+    bl_options = {"REGISTER", "UNDO"}
+
+    # selected_objects = bpy.context.selected_objects
+
+    def execute(self, context):
+        group_for_export()
 
         return {"FINISHED"}

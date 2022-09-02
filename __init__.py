@@ -68,7 +68,7 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         col.operator(operations.SimplifyPipes.bl_idname, text=operations.SimplifyPipes.bl_label, icon="MOD_REMESH")
         col.operator(operations.RenameToSelected.bl_idname, text=operations.RenameToSelected.bl_label, icon="FONT_DATA")
         col.operator(operations.MarkAsFinished.bl_idname, text=operations.MarkAsFinished.bl_label, icon="CHECKMARK")
-        col.operator(operations.BmeshTest.bl_idname, text=operations.BmeshTest.bl_label)
+        col.operator(operations.GroupForExport.bl_idname, text=operations.GroupForExport.bl_label)
         row = layout.row()
         row.operator(operations.TestingCode.bl_idname, text=operations.TestingCode.bl_label, icon="FILE_SCRIPT")
 

@@ -1,6 +1,6 @@
 import bpy
 from . import asset
-from .asset import MarkAsFinished, ClearCustomNormals_Selection, PrepForExport, CleanUp, SimpleExport, SimplifyPipes, RenameToSelected
+from .asset import MarkAsFinished, ClearCustomNormals_Selection, PrepForExport, CleanUp, SimpleExport, SimplifyPipes, RenameToSelected, GroupForExport
 from . import test
 from .test import TestingCode, TestCode2, BmeshTest
 
@@ -15,7 +15,8 @@ Register_Unregister_Classes = [
     ClearCustomNormals_Selection,
     TestingCode,
     TestCode2,
-    BmeshTest
+    BmeshTest,
+    GroupForExport
 ]
 
 
@@ -25,7 +26,7 @@ def register():
         subtype="DIR_PATH",
     )
     for cls in Register_Unregister_Classes:
-        print(str(cls))
+        print(f"Regertering: {str(cls)}")
         bpy.utils.register_class(cls)
 
 

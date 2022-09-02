@@ -1,5 +1,4 @@
 import bpy
-import importlib
 from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty
 
 
@@ -32,8 +31,6 @@ def clear_split_normals():
 def duplicate_objects():
     duplicate_objects = []
     all_collections = bpy.data.collections
-    # current_selected_objects = bpy.context.selected_objects
-    # selected = bpy.data.objects
 
     # adding a new collection to put all duplicate objects
     SimpleExport_collection = bpy.data.collections.new(name="SimpleExport")
@@ -49,10 +46,8 @@ def duplicate_objects():
 
     # remove duplicated objects from all collections
     for col in all_collections:
-        # print(col.name)
         for obj in duplicate_objects:
             try:
-                # print(obj.name + " unlinking object from " + col.name)
                 col.objects.unlink(obj)
             except RuntimeError:
                 pass
@@ -61,7 +56,6 @@ def duplicate_objects():
     for obj in duplicated_objects:
         try:
             SimpleExport_collection.objects.link(obj)
-            # print(obj.name + " linked to " + duplicate_collection.name)
         except RuntimeError:
             pass
 
@@ -132,6 +126,35 @@ def mark_as_finished():
     #         # print(obj.name + " linked to " + duplicate_collection.name)
     #     except RuntimeError:
     #         pass
+
+
+def group_for_export():
+    # get selected objects
+    selected_objects = bpy.context.selected_objects
+
+    # position cursor to center of objects
+    bpy.ops.view3d.snap_cursor_to_selected()
+    cursor_locaiton = bpy.context.scene.cursor.location
+    cursor_rotation = bpy.context.scene.cursor.rotation_euler
+    # add empty to cursor position
+
+    bpy.ops.object.empty_add(
+        type='PLAIN_AXES', align='CURSOR', location=(cursor_locaiton), rotation=(cursor_rotation), scale=(1, 1, 1)
+        )
+    group_parent = bpy.context.selected_objects
+    group_parent = group_parent[0]
+
+    # add custom property "export" to id it as a parent to export
+    group_parent["export"] = True
+    
+    # parent selected objects to empty
+    for obj in selected_objects:
+        bpy.context.object[obj.name].select_set(True)
+    
+    bpy.context.object[group_parent.name].select_set(True)
+    bpy.context.view_layer.objects.active = group_parent
+    bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
+
 
 
 def clear_custom_normals_selection():
