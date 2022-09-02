@@ -1,6 +1,4 @@
 import bpy
-import sys
-import os
 import importlib
 
 modules = [

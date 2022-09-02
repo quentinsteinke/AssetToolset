@@ -114,23 +114,24 @@ def mark_as_finished():
         Finished_collection = bpy.data.collections.new(name="Finished")
         bpy.context.scene.collection.children.link(Finished_collection)
 
-"""    # remove duplicated objects from all collections
-    for col in all_collections:
-        # print(col.name)
-        for obj in active_objects:
-            try:
-                # print(obj.name + " unlinking object from " + col.name)
-                col.objects.unlink(obj)
-            except RuntimeError:
-                pass
+    # # remove duplicated objects from all collections
+    # for col in all_collections:
+    #     # print(col.name)
+    #     for obj in active_objects:
+    #         try:
+    #             # print(obj.name + " unlinking object from " + col.name)
+    #             col.objects.unlink(obj)
+    #         except RuntimeError:
+    #             pass
 
-    # add selected objects to duplicated collection
-    for obj in active_objects:
-        try:
-            Finished_collection.objects.link(obj)
-            # print(obj.name + " linked to " + duplicate_collection.name)
-        except RuntimeError:
-            pass"""
+
+    # # # add selected objects to duplicated collection
+    # for obj in active_objects:
+    #     try:
+    #         Finished_collection.objects.link(obj)
+    #         # print(obj.name + " linked to " + duplicate_collection.name)
+    #     except RuntimeError:
+    #         pass
 
 
 def clear_custom_normals_selection():
