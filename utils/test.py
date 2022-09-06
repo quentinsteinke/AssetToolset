@@ -3,7 +3,7 @@ import bmesh
 
 
 def testing_code():
-    print("Testing Code")
+    print("changed title")
     newMesh = bpy.data.meshes.new("newMesh")
     newObject = bpy.data.objects.new(name="newObject", object_data=newMesh)
     scene = bpy.data.scenes["Scene"]
@@ -18,7 +18,7 @@ def testing_code():
     for obj in objects:
         obj["myProperty"] = "look at me now"
         try:
-            obj.data.vertices[0].co.x += 50
+            obj.data.vertices[0].co.x += 0.25
         except AttributeError:
             pass
         except IndexError:

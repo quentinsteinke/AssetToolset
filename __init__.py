@@ -1,21 +1,17 @@
-import bpy
-import importlib
-
-modules = [
-    "operations"
-]
 imported_modules = {}
 
 
-for module_name in modules:
-    if module_name in locals():
-        print(f"Reloading {module_name}")
-        importlib.reload(locals()[module_name])
-        imported_modules[module_name] = locals()[module_name]
-    else:
-        exec("from . import {}".format(module_name))
-        imported_modules[module_name] = locals()[module_name]
+if "bpy" in locals():
+    import importlib
+    print("Reloading operatoins")
+    importlib.reload(operations)
+    # imported_modules[module_name] = locals()[module_name]
+else:
+    print(f"Importing operations")
+    from . import operations
+    # imported_modules[module_name] = locals()[module_name]
 
+import bpy
 
 bl_info = {
     "name": "Asset Create",
@@ -80,7 +76,6 @@ Register_Unregister_Classes = [
 
 def register():
     operations.register()
-    print("Enabled the addon")
     bpy.types.Scene.simple_export_path = bpy.props.StringProperty(
         name="Export Folder",
         subtype="DIR_PATH",
