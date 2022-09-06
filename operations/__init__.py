@@ -26,7 +26,7 @@ def register():
         subtype="DIR_PATH",
     )
     for cls in Register_Unregister_Classes:
-        print(f"Regertering: {str(cls)}")
+        print(f"Regertering: {cls.__name__}")
         bpy.utils.register_class(cls)
 
 
