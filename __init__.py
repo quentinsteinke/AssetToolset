@@ -3,7 +3,11 @@ imported_modules = {}
 
 if "bpy" in locals():
     import importlib
+<<<<<<< HEAD
     print("Reloading operations")
+=======
+    print("Reloading operatoins")
+>>>>>>> fcf365f718ca3b60d532c8cd224f463eea13783c
     importlib.reload(operations)
     # imported_modules[module_name] = locals()[module_name]
 else:
@@ -86,6 +90,10 @@ Register_Unregister_Classes = [
 
 
 def register():
+<<<<<<< HEAD
+=======
+    operations.register()
+>>>>>>> fcf365f718ca3b60d532c8cd224f463eea13783c
     bpy.types.Scene.simple_export_path = bpy.props.StringProperty(
         name="Export Folder",
         subtype="DIR_PATH",
