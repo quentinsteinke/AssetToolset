@@ -17,8 +17,6 @@ Register_Unregister_Classes = [
     BmeshTest,
     GroupForExport
 ]
-<<<<<<< HEAD
-=======
 
 
 def register():
@@ -36,4 +34,3 @@ def unregister():
     for cls in Register_Unregister_Classes:
         print(str(cls))
         bpy.utils.unregister_class(cls)
->>>>>>> fcf365f718ca3b60d532c8cd224f463eea13783c
