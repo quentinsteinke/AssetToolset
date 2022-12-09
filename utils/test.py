@@ -3,7 +3,7 @@ import bmesh
 
 
 def testing_code():
-    print("changed title")
+    print("now does it update?")
     newMesh = bpy.data.meshes.new("newMesh")
     newObject = bpy.data.objects.new(name="newObject", object_data=newMesh)
     scene = bpy.data.scenes["Scene"]

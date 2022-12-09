@@ -86,9 +86,6 @@ def prep_objects_for_combine():
 def combine_objects_by_parent():
     active_object = bpy.context.view_layer.objects.active
 
-# duplicate_objects()
-# prep_objects_for_combine()
-
 
 # Needs work
 def mark_as_finished():
@@ -128,19 +125,30 @@ def mark_as_finished():
     #         pass
 
 
+def select_object(object):
+    bpy.data.objects[object.name].select_set(True)
+
 def group_for_export():
     # get selected objects
-    selected_objects = bpy.context.selected_objects
+    selected_obj = bpy.context.selected_objects
+    first_selected = bpy.context.view_layer.objects.active
 
     # position cursor to center of objects
-    bpy.ops.view3d.snap_cursor_to_selected()
+    bpy.context.scene.cursor.location = first_selected.location
+    bpy.context.scene.cursor.rotation_euler = first_selected.rotation_euler
     cursor_locaiton = bpy.context.scene.cursor.location
     cursor_rotation = bpy.context.scene.cursor.rotation_euler
     # add empty to cursor position
 
     bpy.ops.object.empty_add(
-        type='PLAIN_AXES', align='CURSOR', location=(cursor_locaiton), rotation=(cursor_rotation), scale=(1, 1, 1)
+        type='PLAIN_AXES',
+        align='CURSOR',
+        location=(cursor_locaiton),
+        rotation=(cursor_rotation),
+        scale=(1, 1, 1)
         )
+    bpy.context.object.name = first_selected.name + "_GRP"
+
     group_parent = bpy.context.selected_objects
     group_parent = group_parent[0]
 
@@ -148,13 +156,35 @@ def group_for_export():
     group_parent["export"] = True
     
     # parent selected objects to empty
-    for obj in selected_objects:
-        bpy.context.object[obj.name].select_set(True)
+    for obj in selected_obj:
+        bpy.data.objects[obj.name].select_set(True)
     
-    bpy.context.object[group_parent.name].select_set(True)
+    bpy.data.objects[group_parent.name].select_set(True)
     bpy.context.view_layer.objects.active = group_parent
     bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
 
+
+def group_export_fbx(export_path):
+    selected_objects = bpy.context.selected_objects
+
+
+    for obj in selected_objects:
+        model_name = obj.name
+        prefix_name = "SM_"
+        sufix_name = ".fbx"
+        
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.data.objects[obj.name].select_set(True)
+        bpy.context.view_layer.objects.active = bpy.data.objects[obj.name]
+        
+        bpy.ops.export_scene.fbx(
+        filepath=export_path + prefix_name + model_name + sufix_name,
+        check_existing=True, use_selection=True,
+        apply_scale_options="FBX_SCALE_NONE",
+        object_types={"EMPTY","MESH"},
+        mesh_smooth_type="FACE",
+        use_mesh_modifiers=True
+        )
 
 
 def clear_custom_normals_selection():

@@ -3,7 +3,7 @@ imported_modules = {}
 
 if "bpy" in locals():
     import importlib
-    print("Reloading operatoins")
+    print("Reloading operations")
     importlib.reload(operations)
     # imported_modules[module_name] = locals()[module_name]
 else:
@@ -71,11 +71,21 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
 
 Register_Unregister_Classes = [
     PANEL_PT_SimpleExport,
+    operations.PrepForExport,
+    operations.CleanUp,
+    operations.SimpleExport,
+    operations.SimplifyPipes,
+    operations.RenameToSelected,
+    operations.MarkAsFinished,
+    operations.ClearCustomNormals_Selection,
+    operations.TestingCode,
+    operations.TestCode2,
+    operations.BmeshTest,
+    operations.GroupForExport
 ]
 
 
 def register():
-    operations.register()
     bpy.types.Scene.simple_export_path = bpy.props.StringProperty(
         name="Export Folder",
         subtype="DIR_PATH",
@@ -85,7 +95,6 @@ def register():
 
 
 def unregister():
-    operations.unregister()
     print("Disabling the addon")
     del bpy.types.Scene.simple_export_path
     for cls in Register_Unregister_Classes:

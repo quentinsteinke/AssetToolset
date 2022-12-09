@@ -1,6 +1,6 @@
 import bpy
 import pathlib
-from .. utils import add_split_normals, clear_split_normals, duplicate_objects, prep_objects_for_combine, combine_objects_by_parent, mark_as_finished, clear_custom_normals_selection, group_for_export
+from .. utils import add_split_normals, clear_split_normals, duplicate_objects, prep_objects_for_combine, combine_objects_by_parent, mark_as_finished, clear_custom_normals_selection, group_for_export, group_export_fbx
 from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty
 
 
@@ -55,13 +55,15 @@ class PrepForExport(bpy.types.Operator):
     def execute(self, context):
         print("Prepping assets")
 
-        prep_objects_for_combine()
-
-        # if self.split_normals == True:
-            # self.add_split_normals()
+        if self.split_normals == True:
+            print("Fixing normals")
+            self.prep_objects_for_combine()
         
-        # if self.duplicate == True:
-            # self.duplicate_objects()
+        if self.duplicate == True:
+            print("duplicating meshes")
+            self.duplicate_objects()
+        
+        combine_objects_by_parent()
 
         return {"FINISHED"}
 
@@ -89,11 +91,9 @@ class SimpleExport(bpy.types.Operator):
     # selected_objects = bpy.context.selected_objects
 
     def execute(self, context):
-        simple_export_path = bpy.path.abspath(context.scene.simple_export_path)
-        print(simple_export_path)
-        export_path = pathlib.Path(simple_export_path)
-        # for 
-        # bpy.ops.export_mesh(filepath="")
+        export_path = bpy.path.abspath(context.scene.simple_export_path)
+        
+        group_export_fbx(export_path)
 
         return {"FINISHED"}
 
