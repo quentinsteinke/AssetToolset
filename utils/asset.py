@@ -30,40 +30,53 @@ def clear_split_normals():
 # Duplicating selected objects
 def duplicate_objects():
     duplicate_objects = []
-    all_collections = bpy.data.collections
-
-    # adding a new collection to put all duplicate objects
-    SimpleExport_collection = bpy.data.collections.new(name="SimpleExport")
-    bpy.context.scene.collection.children.link(SimpleExport_collection)
 
     # duplicating selected objects
     bpy.ops.object.duplicate()
-    duplicated_objects = bpy.context.selected_objects
+    return bpy.context.selected_objects
 
-    # adding duplicated objects to duplicate_objects list
-    for obj in duplicated_objects:
-        duplicate_objects.append(obj)
 
-    # remove duplicated objects from all collections
-    for col in all_collections:
-        for obj in duplicate_objects:
+def selected_to_simpleexport():
+    selected_objects = bpy.context.selected_objects
+
+
+    def link_selected_to_collection(collection_name):
+        collection = bpy.data.collections[collection_name]
+        
+        for obj in selected_objects:
             try:
-                col.objects.unlink(obj)
+                collection.objects.link(obj)
             except RuntimeError:
                 pass
+            
 
-    # add selected objects to duplicated collection
-    for obj in duplicated_objects:
-        try:
-            SimpleExport_collection.objects.link(obj)
-        except RuntimeError:
-            pass
+    if "SimpleExport" in bpy.data.collections:
+        
+        for col in bpy.data.collections:
+            for obj in selected_objects:
+                try:
+                    col.objects.unlink(obj)
+                    link_selected_to_collection("SimpleExport")
+                except RuntimeError:
+                    pass
+        
+    else:
+        
+        SimpleExport_collection = bpy.data.collections.new(name="SimpleExport")
+        bpy.context.scene.collection.children.link(SimpleExport_collection)
+        
+        for col in bpy.data.collections:
+            for obj in selected_objects:
+                try:
+                    col.objects.unlink(obj)
+                    link_selected_to_collection("SimpleExport")
+                except RuntimeError:
+                    pass
 
 
 def prep_objects_for_combine():
     current_selected_objects = bpy.context.selected_objects
     first_active_obj = bpy.context.active_object
-    print(first_active_obj.name)
 
     bpy.ops.object.make_single_user(object=True, obdata=True)
 
@@ -85,6 +98,32 @@ def prep_objects_for_combine():
 # Grouping ojects by parent empty and combining with parent name
 def combine_objects_by_parent():
     active_object = bpy.context.view_layer.objects.active
+    simple_export_collection = bpy.data.collections["SimpleExport"]
+    group_list = []
+
+    for obj in simple_export_collection.all_objects:
+        if "export" in obj:
+            group_list.append(obj)
+
+    for obj in group_list:
+        parent_name = obj.name
+        
+        bpy.ops.object.select_all(action='DESELECT')
+        
+        bpy.data.objects[obj.name].select_set(True)
+        bpy.context.view_layer.objects.active = bpy.data.objects[obj.name]
+        
+        parent_location = obj.location
+        parent_rotation = obj.rotation_euler
+        
+        bpy.ops.object.select_grouped(type='CHILDREN_RECURSIVE')
+        group_children = bpy.context.selected_objects
+            
+        bpy.context.view_layer.objects.active = bpy.data.objects[group_children[0].name]
+        print(group_children[0])
+
+        bpy.ops.object.join()
+
 
 
 # Needs work

@@ -1,6 +1,6 @@
 import bpy
 import pathlib
-from .. utils import add_split_normals, clear_split_normals, duplicate_objects, prep_objects_for_combine, combine_objects_by_parent, mark_as_finished, clear_custom_normals_selection, group_for_export, group_export_fbx
+from .. utils import add_split_normals, clear_split_normals, duplicate_objects, prep_objects_for_combine, combine_objects_by_parent, mark_as_finished, clear_custom_normals_selection, group_for_export, group_export_fbx, selected_to_simpleexport
 from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty
 
 
@@ -55,13 +55,15 @@ class PrepForExport(bpy.types.Operator):
     def execute(self, context):
         print("Prepping assets")
 
-        if self.split_normals == True:
-            print("Fixing normals")
-            self.prep_objects_for_combine()
-        
         if self.duplicate == True:
             print("duplicating meshes")
-            self.duplicate_objects()
+            duplicate_objects()
+
+        selected_to_simpleexport()
+
+        if self.split_normals == True:
+            print("Fixing normals")
+            prep_objects_for_combine()
         
         combine_objects_by_parent()
 
