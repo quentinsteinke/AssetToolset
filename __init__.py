@@ -1,18 +1,3 @@
-imported_modules = {}
-
-
-if "bpy" in locals():
-    import importlib
-    print("Reloading operations")
-    importlib.reload(operations)
-    # imported_modules[module_name] = locals()[module_name]
-else:
-    print(f"Importing operations")
-    from . import operations
-    # imported_modules[module_name] = locals()[module_name]
-
-import bpy
-
 bl_info = {
     "name": "Asset Create",
     "author": "Quentin Steinke",
@@ -24,6 +9,12 @@ bl_info = {
     "doc_url": "",
     "category": "Object",
 }
+
+
+import bpy
+import sys
+import importlib
+from . import operations
 
 
 # N panel for the addon
@@ -48,6 +39,7 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         row = layout.row()
         row.prop(scene, "split_normals")
         row.prop(scene, "duplicate")
+        col.operator(operations.GroupForExport.bl_idname, text=operations.GroupForExport.bl_label)
         col = layout.column(align=True)
         col.operator(operations.PrepForExport.bl_idname, text=operations.PrepForExport.bl_label, icon="MOD_LINEART")
         row = layout.row()
@@ -64,24 +56,12 @@ class PANEL_PT_SimpleExport(bpy.types.Panel):
         col.operator(operations.SimplifyPipes.bl_idname, text=operations.SimplifyPipes.bl_label, icon="MOD_REMESH")
         col.operator(operations.RenameToSelected.bl_idname, text=operations.RenameToSelected.bl_label, icon="FONT_DATA")
         col.operator(operations.MarkAsFinished.bl_idname, text=operations.MarkAsFinished.bl_label, icon="CHECKMARK")
-        col.operator(operations.GroupForExport.bl_idname, text=operations.GroupForExport.bl_label)
         row = layout.row()
         row.operator(operations.TestingCode.bl_idname, text=operations.TestingCode.bl_label, icon="FILE_SCRIPT")
 
 
 Register_Unregister_Classes = [
-    PANEL_PT_SimpleExport,
-    operations.PrepForExport,
-    operations.CleanUp,
-    operations.SimpleExport,
-    operations.SimplifyPipes,
-    operations.RenameToSelected,
-    operations.MarkAsFinished,
-    operations.ClearCustomNormals_Selection,
-    operations.TestingCode,
-    operations.TestCode2,
-    operations.BmeshTest,
-    operations.GroupForExport
+    PANEL_PT_SimpleExport
 ]
 
 
@@ -97,6 +77,7 @@ def register():
 
 def unregister():
     print("Disabling the addon")
+    operations.unregister()
     del bpy.types.Scene.simple_export_path
     for cls in Register_Unregister_Classes:
         bpy.utils.unregister_class(cls)

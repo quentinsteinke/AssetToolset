@@ -1,3 +1,4 @@
+import bpy
 from . import asset
 from .asset import MarkAsFinished, ClearCustomNormals_Selection, PrepForExport, CleanUp, SimpleExport, SimplifyPipes, RenameToSelected, GroupForExport
 from . import test

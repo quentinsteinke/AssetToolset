@@ -2,6 +2,24 @@ import bpy
 from bpy.props import BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty
 
 
+def rename_asset(obj):
+    obj_name = obj.name
+
+    if "SM_" not in obj_name:
+        obj_name = "SM_" + obj_name
+
+    if ".0" in obj_name:
+        obj_name = obj_name[:-4]
+
+    if ".1" in obj_name:
+        obj_name = obj_name[:-4]
+
+    try:
+        bpy.context.object.name = obj_name
+    except NameError:
+        pass
+
+
 # Adding split normals on selected objects
 def add_split_normals():
     current_selected_objects = bpy.context.selected_objects
@@ -120,9 +138,10 @@ def combine_objects_by_parent():
         group_children = bpy.context.selected_objects
             
         bpy.context.view_layer.objects.active = bpy.data.objects[group_children[0].name]
-        print(group_children[0])
 
         bpy.ops.object.join()
+
+        rename_asset(obj)
 
 
 
@@ -209,7 +228,6 @@ def group_export_fbx(export_path):
 
     for obj in selected_objects:
         model_name = obj.name
-        prefix_name = "SM_"
         sufix_name = ".fbx"
         
         bpy.ops.object.select_all(action='DESELECT')
@@ -217,7 +235,7 @@ def group_export_fbx(export_path):
         bpy.context.view_layer.objects.active = bpy.data.objects[obj.name]
         
         bpy.ops.export_scene.fbx(
-        filepath=export_path + prefix_name + model_name + sufix_name,
+        filepath=export_path + model_name + sufix_name,
         check_existing=True, use_selection=True,
         apply_scale_options="FBX_SCALE_NONE",
         object_types={"EMPTY","MESH"},
